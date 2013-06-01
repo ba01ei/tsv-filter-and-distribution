@@ -24,31 +24,70 @@ class TableAnalyzer
     # puts result
 
     data_row_count = table.split("\n").count - 1
-    if data_row_count<1
-      return result
-    end
+    rows_used = 0
 
     input_keys_to_watch = command["input"].keys 
     col_num_to_filter_map = Hash.new
     col_num_to_result_map = Hash.new
+    col_val_result_dict = Hash.new # like {"3(col index)":{"valueX": the_array_in_results}}
+
+    filter_cols = []
+    result_cols = []
 
     table.split("\n").each_with_index do |line, idx|
+      ok_to_use_row = true
       if idx==0
         line.split("\t").each_with_index do |col, idx2|
           if input_keys_to_watch.count(col)
             col_num_to_filter_map[idx2] = command["input"][col] # array
+            filter_cols << idx2
           end
           if command["output"].count(col)
             col_num_to_result_map[idx2] = result[col] # array
+            col_val_result_dict[idx2] = {}
+            result_cols << idx2
           end
         end
         # puts col_num_to_filter_map
-        puts col_num_to_result_map
+        # puts col_num_to_result_map
       else
-        line.split("\t").each_with_index do |col, idx2|
-        end 
-      end
-    end
+        columns = line.split("\t")
+        filter_cols.each do |idx2|
+          values = columns[idx2].split(",").map{|v| v.strip}
+          filters = col_num_to_result_map[idx2]
+
+          unless values
+            puts "row #{idx} col #{idx2} no values"
+          end
+          puts "row #{idx}, col #{idx2} no filters" unless filters
+          if (values - filters).count != values.count - filters.count
+            # filters has something values doesn't have
+            ok_to_use_row = false
+            break # quit col loop
+          else
+            rows_used += 1
+          end
+        end
+
+        break unless ok_to_use_row # quit row loop
+
+        result_cols.each do |idx2|
+          values = columns[idx2].split(",").map{|v| v.strip}
+          result_array = col_num_to_result_map[idx2]
+          found = false
+          values.each do |value|
+            if col_val_result_dict[idx2][value]
+              col_val_result_dict[idx2][value][count] += 1
+            else
+              col_value_result_dict[idx2][value] = 1
+            end
+          end # of value loop
+          
+        end # of col loop
+      end # of row
+    end # of all rows
+    
+    puts result
   end
 end
 
