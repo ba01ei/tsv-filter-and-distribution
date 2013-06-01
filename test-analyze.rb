@@ -6,7 +6,7 @@ class TestTableAnalyzer < Test::Unit::TestCase
 
   def test_analyze
     table = "A\tB\tC\n1\t2\t3"
-    out = TableAnalyzer.analyze(table, {"input"=>{"A"=>1}, "output"=>["C"]})
+    out = TableAnalyzer.analyze(table, {"input"=>{"A"=>["1"]}, "output"=>["C"]})
   end
 
 end

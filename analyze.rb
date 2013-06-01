@@ -38,11 +38,12 @@ class TableAnalyzer
       ok_to_use_row = true
       if idx==0
         line.split("\t").each_with_index do |col, idx2|
-          if input_keys_to_watch.count(col)
+          if input_keys_to_watch.count(col)>0
+            puts "input_keys_to_watch=#{input_keys_to_watch} which has #{col} for col #{idx2}"
             col_num_to_filter_map[idx2] = command["input"][col] # array
             filter_cols << idx2
           end
-          if command["output"].count(col)
+          if command["output"].count(col)>0
             col_num_to_result_map[idx2] = result[col] # array
             col_val_result_dict[idx2] = {}
             result_cols << idx2
@@ -50,17 +51,15 @@ class TableAnalyzer
         end
         # puts col_num_to_filter_map
         # puts col_num_to_result_map
+        puts "filter cols: #{filter_cols}"
       else
         columns = line.split("\t")
         filter_cols.each do |idx2|
           values = columns[idx2].split(",").map{|v| v.strip}
-          filters = col_num_to_result_map[idx2]
+          filters = col_num_to_filter_map[idx2]
 
-          unless values
-            puts "row #{idx} col #{idx2} no values"
-          end
-          puts "row #{idx}, col #{idx2} no filters" unless filters
-          if (values - filters).count != values.count - filters.count
+          puts "values - filters = #{values} - #{filters}"
+          if (values - filters).count != (values.count - filters.count)
             # filters has something values doesn't have
             ok_to_use_row = false
             break # quit col loop
@@ -79,7 +78,7 @@ class TableAnalyzer
             if col_val_result_dict[idx2][value]
               col_val_result_dict[idx2][value][count] += 1
             else
-              col_value_result_dict[idx2][value] = 1
+              col_val_result_dict[idx2][value] = 1
             end
           end # of value loop
           
