@@ -39,7 +39,7 @@ class TableAnalyzer
       if idx==0
         line.split("\t").each_with_index do |col, idx2|
           if input_keys_to_watch.count(col)>0
-            puts "input_keys_to_watch=#{input_keys_to_watch} which has #{col} for col #{idx2}"
+            # puts "input_keys_to_watch=#{input_keys_to_watch} which has #{col} for col #{idx2}"
             col_num_to_filter_map[idx2] = command["input"][col] # array
             filter_cols << idx2
           end
@@ -51,24 +51,23 @@ class TableAnalyzer
         end
         # puts col_num_to_filter_map
         # puts col_num_to_result_map
-        puts "filter cols: #{filter_cols}"
+        # puts "filter cols: #{filter_cols}"
       else
         columns = line.split("\t")
         filter_cols.each do |idx2|
           values = columns[idx2].split(",").map{|v| v.strip}
           filters = col_num_to_filter_map[idx2]
 
-          puts "values - filters = #{values} - #{filters}"
+          # puts "values - filters = #{values} - #{filters}"
           if (values - filters).count != (values.count - filters.count)
             # filters has something values doesn't have
             ok_to_use_row = false
             break # quit col loop
-          else
-            rows_used += 1
           end
         end
 
         break unless ok_to_use_row # quit row loop
+        rows_used += 1
 
         result_cols.each do |idx2|
           values = columns[idx2].split(",").map{|v| v.strip}
@@ -76,9 +75,10 @@ class TableAnalyzer
           found = false
           values.each do |value|
             if col_val_result_dict[idx2][value]
-              col_val_result_dict[idx2][value][count] += 1
+              col_val_result_dict[idx2][value]["count"] += 1
             else
-              col_val_result_dict[idx2][value] = 1
+              col_val_result_dict[idx2][value] = {"value"=>value, "count"=>1}
+              result_array << col_val_result_dict[idx2][value]
             end
           end # of value loop
           
@@ -86,7 +86,7 @@ class TableAnalyzer
       end # of row
     end # of all rows
     
-    puts result
+    puts "result is #{result}"
   end
 end
 
