@@ -62,12 +62,16 @@ class TableAnalyzer
           # puts "values - filters = #{values} - #{filters}"
           if (values - filters).count != (values.count - filters.count)
             # filters has something values doesn't have
+            # puts "no match at row #{idx} for col #{idx2}"
             ok_to_use_row = false
             break # quit col loop
           end
         end
 
-        break unless ok_to_use_row # quit row loop
+        unless ok_to_use_row # quit row loop
+          # puts "row #{idx} doesn't qualify"
+          next
+        end
         rows_used += 1
 
         result_cols.each do |idx2|
@@ -85,10 +89,19 @@ class TableAnalyzer
           
         end # of col loop
       end # of row
-      puts "result is #{result} after row #{idx}"
+      # puts "result is #{result} after row #{idx}"
     end # of all rows
+
+    # add percentage
+    command["output"].each do |col|
+      result[col].each do |item|
+        # puts "count: #{item["count"]}, rows:#{rows_used}, result:#{item["count"].to_f/rows_used.to_f}"
+        item["pct"] = (item["count"].to_f * 100.0 / rows_used.to_f).round.to_i
+      end
+    end
     
-    puts "result is #{result}"
+    # puts "result is #{result}"
+    return result
   end
 end
 
