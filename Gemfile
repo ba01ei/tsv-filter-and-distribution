@@ -1,3 +1,3 @@
 
 gem 'sinatra'
-
+gem 'slim'
