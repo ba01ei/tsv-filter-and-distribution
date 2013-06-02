@@ -53,6 +53,22 @@ e.g. if we have table
 
 With filter {"Column1":["a", "b"]}, row 1 will pass but row 2 will fail.
 
+Please check example* files and test-analyze.rb to see how it works in detail.
+
+
+Use cases
+=========
+
+This project meant to provide a handy way to deal with small data. It is never meant to be used to aggregate data from any database (since each database has different ways to retrieve data and aggregate already, e.g. group-by, MapReduce and do the same thing).
+
+This is just for a text based table. Maybe someone already did this and I'm reinventing the wheel, but since I didn't find a handy one and this is very simple to write, so..
+
+common use cases:
+
+1. analyze the forms from google drive spreadsheets
+2. quickly analyze a local table file without excel
+
+
 
 License
 =======
