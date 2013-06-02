@@ -84,6 +84,7 @@ class TableAnalyzer
           
         end # of col loop
       end # of row
+      puts "result is #{result} after row #{idx}"
     end # of all rows
     
     puts "result is #{result}"
