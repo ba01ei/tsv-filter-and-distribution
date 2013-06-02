@@ -38,6 +38,7 @@ class TableAnalyzer
       ok_to_use_row = true
       if idx==0
         line.split("\t").each_with_index do |col, idx2|
+          col.strip!
           if input_keys_to_watch.count(col)>0
             # puts "input_keys_to_watch=#{input_keys_to_watch} which has #{col} for col #{idx2}"
             col_num_to_filter_map[idx2] = command["input"][col] # array
