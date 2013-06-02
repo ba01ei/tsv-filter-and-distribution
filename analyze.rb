@@ -37,6 +37,7 @@ class TableAnalyzer
     filter_cols = []
     result_cols = []
 
+    table.strip! # handle the case when there's an empty line at the beginning
     table.split("\n").each_with_index do |line, idx|
       ok_to_use_row = true
       if idx==0
