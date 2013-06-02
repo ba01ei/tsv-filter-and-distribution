@@ -26,6 +26,7 @@ class TableAnalyzer
     data_row_count = table.split("\n").count - 1
     rows_used = 0
 
+    command["input"]={} unless command["input"]
     input_keys_to_watch = command["input"].keys 
     col_num_to_filter_map = Hash.new
     col_num_to_result_map = Hash.new
@@ -59,7 +60,7 @@ class TableAnalyzer
           values = columns[idx2].split(",").map{|v| v.strip}
           filters = col_num_to_filter_map[idx2]
 
-          # puts "values - filters = #{values} - #{filters}"
+          puts "values - filters = #{values} - #{filters}"
           if (values - filters).count != (values.count - filters.count)
             # filters has something values doesn't have
             # puts "no match at row #{idx} for col #{idx2}"
