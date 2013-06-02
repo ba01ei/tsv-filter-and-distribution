@@ -13,6 +13,8 @@
 # 2. first row is for column names (e.g. "col1", "col2")
 # 3. each value cell can be a single value string, or comma separated multiple values
 
+require 'yaml'
+
 class TableAnalyzer
 
   def self.analyze(table, command)
@@ -60,7 +62,7 @@ class TableAnalyzer
           values = columns[idx2].split(",").map{|v| v.strip}
           filters = col_num_to_filter_map[idx2]
 
-          puts "values - filters = #{values} - #{filters}"
+          # puts "values - filters = #{values} - #{filters}"
           if (values - filters).count != (values.count - filters.count)
             # filters has something values doesn't have
             # puts "no match at row #{idx} for col #{idx2}"
@@ -106,3 +108,40 @@ class TableAnalyzer
   end
 end
 
+if __FILE__ == $0
+  if ARGV.count < 3
+    puts "Usage:\nanalyze filename [-i column1=value1 [-i column2=value2]] -o column3,column4,column5\n\n"
+    exit 1
+  end
+  filename = ARGV[0]
+  args = ARGV[1..-1].join(' ')
+  inputs = args.scan(/-i ([^-]*)/).map{|a| a[0]}
+  outputs = args.scan(/-o ([^-]*)/).map{|a| a[0]}
+  # puts inputs.inspect
+  # puts outputs.inspect
+  if outputs.count<1
+    puts "Need at least one output column\n\n"
+    exit 1
+  end
+  cmd = {"output"=>[], "input"=>{}}
+
+  # handle output
+  outputs.each do |output|
+    cmd["output"] +=  output.split(",").map{|c| c.strip}
+  end
+
+  # handle input
+  inputs.each do |input|
+    array = input.split("=")
+    if array.count==2
+      key = array[0].strip
+      values = array[1].strip
+      cmd["input"][key] = values.split(",").map{|v| v.strip}
+    end
+  end
+
+  # puts cmd
+
+  result = TableAnalyzer.analyze(File.read(filename), cmd)
+  puts result.to_yaml
+end
