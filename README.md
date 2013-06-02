@@ -7,39 +7,49 @@ Usage
 =====
 
 Requirement on the table:
-The columns need to be tab-separated.
-The rows need to be ended with \n.
-It needs to have a title row.
-If a cell has multiple values, they need to be separated by comma.
+1. The columns need to be tab-separated.
+2. The rows need to be ended with \n.
+3. It needs to have a title row.
+4. If a cell has multiple values, they need to be separated by comma.
 
 Example:
-Column1	Column2	Column3
-A	1	X,3,Y
-B	2	Y,4
-A	5	Z
 
-1. Command line mode
+    Column1	Column2	Column3
+    A	1	X,3,Y
+    B	2	Y,4
+    A	5	Z
+
+1- Command line mode
+
 ./analyze filename [-i column1=value1 [-i column2=value2]] -o column3,column4,column5
 
-2. API mode
+2- API mode
+
 start the web server (Sinatra based):
+
 bundle install
+
 ./web.rb
 
 Post at /analyze, with params:
+
 tsv : the tsv string
+
 cmd : the command in json. example: {"input": {"col1":["value1", "value2"], "col2":["valueA"]}, "output":["col3", "col4"]}
 
-3. Web mode
+3- Web mode
+
 start the web server, then visit the web
 
 Note:
+
 If multiple column filters are used, or if one filter has multiple values, they are all in AND relation, instead of OR.
 
 e.g. if we have table
-Row  Column1	Column2
-1    a,b,c	X
-2    a,c	Y
+
+    Row  Column1	Column2
+    1    a,b,c	X
+    2    a,c	Y
 
 With filter {"Column1":["a", "b"]}, row 1 will pass but row 2 will fail.
 
