@@ -55,11 +55,16 @@ class TableAnalyzer
           end
         end
         # puts col_num_to_filter_map
-        # puts col_num_to_result_map
+        # puts "result cols: #{result_cols}, map: #{col_num_to_result_map}"
         # puts "filter cols: #{filter_cols}"
       else
         columns = line.split("\t")
         filter_cols.each do |idx2|
+          values_str = columns[idx2]
+          unless values_str
+            ok_to_use_row = false
+            break
+          end
           values = columns[idx2].split(",").map{|v| v.strip}
           filters = col_num_to_filter_map[idx2]
 
@@ -79,6 +84,10 @@ class TableAnalyzer
         rows_used += 1
 
         result_cols.each do |idx2|
+          # puts "columns: #{columns}, idx:#{idx2}"
+          values_str = columns[idx2]
+          break unless values_str
+          break if values_str.length < 1
           values = columns[idx2].split(",").map{|v| v.strip}
           result_array = col_num_to_result_map[idx2]
           found = false
