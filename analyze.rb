@@ -2,7 +2,7 @@
 
 ## This analyzes a form using filter and distribution approach
 # Basic usage:
-# {"input": {"col1":["value1", "value2"], "col2":["valueA"]}, "output":["col3", "col4"]}
+# {"input": {"col1":["value1", "value2"], "col2":["valueA"]}, "multiplier":"colCount", "output":["col3", "col4"]}
 # which means
 # for rows with col1 having value1 AND value2, AND col2 having valueA, get the distribution of all values in col3, col4
 # output will something like {"col3":[{"value":"valueX", "count":1, "pct":10}, {"value":"valueY", "count":9, "pct":90}], "col4":[...]}
@@ -36,6 +36,7 @@ class TableAnalyzer
 
     filter_cols = []
     result_cols = []
+    multiplier_col = nil
 
     table.strip! # handle the case when there's an empty line at the beginning
     table.split("\n").each_with_index do |line, idx|
@@ -52,6 +53,9 @@ class TableAnalyzer
             col_num_to_result_map[idx2] = result[col] # array
             col_val_result_dict[idx2] = {}
             result_cols << idx2
+          end
+          if command["multiplier"] and command["multiplier"].count(col) > 0
+            multiplier_col = idx2
           end
         end
         # puts col_num_to_filter_map
@@ -81,7 +85,7 @@ class TableAnalyzer
           # puts "row #{idx} doesn't qualify"
           next
         end
-        rows_used += 1
+        rows_used += multiplier_col ? columns[multiplier_col].to_f :  1.0
 
         result_cols.each do |idx2|
           # puts "columns: #{columns}, idx:#{idx2}"
@@ -93,9 +97,9 @@ class TableAnalyzer
           found = false
           values.each do |value|
             if col_val_result_dict[idx2][value]
-              col_val_result_dict[idx2][value]["count"] += 1
+              col_val_result_dict[idx2][value]["count"] += multiplier_col ? columns[multiplier_col].to_f :  1.0
             else
-              col_val_result_dict[idx2][value] = {"value"=>value, "count"=>1}
+              col_val_result_dict[idx2][value] = {"value"=>value, "count"=> multiplier_col ? columns[multiplier_col].to_f :  1.0}
               result_array << col_val_result_dict[idx2][value]
             end
           end # of value loop
