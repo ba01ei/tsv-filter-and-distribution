@@ -63,6 +63,7 @@ form method="post"
     The data table (tsv format)
   br
   textarea name="tsv"
+    | #{params["data"]}
   br
   | note: the first row must be the title row (i.e. names of each column)
   br
