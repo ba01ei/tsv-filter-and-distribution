@@ -69,10 +69,10 @@ form method="post"
   br
   br
   label  Output columns (separate with comma)
-  input type="text" name="output"
+  input type="text" name="output" value=params["output"]
   br
   label  Multiplier column
-  input type="text" name="multiplier"
+  input type="text" name="multiplier" value=params["multiplier"]
   br
   br
   hr
