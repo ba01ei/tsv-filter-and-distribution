@@ -115,6 +115,9 @@ class TableAnalyzer
         # puts "count: #{item["count"]}, rows:#{rows_used}, result:#{item["count"].to_f/rows_used.to_f}"
         item["pct"] = (item["count"].to_f * 100.0 / rows_used.to_f).round.to_i
       end
+      
+      # sort output
+      result[col].sort!{|a, b| b["count"] <=> a["count"]}
     end
     
     # puts "result is #{result}"
