@@ -26,6 +26,7 @@ post '/' do
       command["input"][k] = v_str.split(",").map{|x| x.strip}
     end
   end
+  command["multiplier"] = params["multiplier"] if params["multiplier"].length > 0
   @result = TableAnalyzer.analyze(table, command)
   slim :result
 end
@@ -68,6 +69,9 @@ form method="post"
   br
   label  Output columns (separate with comma)
   input type="text" name="output"
+  br
+  label  Multiplier column
+  input type="text" name="multiplier"
   br
   br
   hr
